@@ -1,73 +1,76 @@
 "use strict";
 
-let w = process.argv[2] || 30;
-let h = process.argv[3] || 10;
+// Reading the input from the user that initiated the process.
+let WWidth  = process.argv[2] || 30;    // Reading the 3rd argument as the World width
+let WHeight = process.argv[3] || 10;    // Reading the 3rd argument as the World height
 
-let SHx = process.argv[4] || 1; //Snake head X coordinate
-let SHy = process.argv[5] || 1; //Snake head Y coordinate
-let Sl  = process.argv[6] || 3; // Snake length in segments including the head
+let SHx = process.argv[4] || 4;   //Snake head X coordinate
+let SHy = process.argv[5] || 4;   //Snake head Y coordinate
+let Sl  = process.argv[6] || 3;   // Snake length in segments including the head
 let Sd  = process.argv[7] || 'W'; // Snake movement direction [N,S,E,W]
 
-// Q - snake head
-// o - snake body
-// + - world corner
-// | - world vertical wall (edge)
-// - - world horizontal wall (edge)
-//   - world space (a space character)
-// * - snake food
-
-const SH = 'Q'; // snake head
-const SB = 'o'; // snake body
+// Constants defined that render the world.
 const WC = '+'; // world corner
 const WV = '|'; // world vertical wall (edge)
 const WH = '-'; // world horizontal wall (edge)
 const WS = ' '; // world space (a space character)
+const SH = 'Q'; // snake head
+const SB = 'o'; // snake body
 const SF = '*'; // snake food
 
-// Draw the World
-
-let matrix = [];
-for (let row = 0; row < h; row++) {
-  matrix[row] = [];
-  for (let col = 0; col < w; col++) {
-    matrix[row][col] = WS;
+// Define the World
+let world = []; // A 2 dimensional matrix (Array of Arrays => Array of rows which is an array of row cells)
+for (let row = 0; row < WHeight; row++) {
+  world[row] = [];
+  for (let col = 0; col < WWidth; col++) {
+    world[row][col] = WS;
   }
 }
-matrix[0][0]         = WC;
-matrix[h - 1][0]     = WC;
-matrix[0][w - 1]     = WC;
-matrix[h - 1][w - 1] = WC;
+// Set the world corners
+world[0][0]                    = WC; // Top Left cell
+world[WHeight - 1][0]          = WC; // Bottom Left cell
+world[0][WWidth - 1]           = WC; // Top Right cell
+world[WHeight - 1][WWidth - 1] = WC; // Bottom Right cell
 
-// WTF?
-matrix [0][0] = WH;
-matrix [0][0] = WH;
-matrix [0][0] = WH;
-matrix [0][0] = WH;
+// Set the world Vertical Walls (edges)
+for (let row = 1; row < WHeight - 1; row++) {
+  world[row][0] = world[row][WWidth - 1] = WV;
+}
+// Set the world Horizontal Walls (edges)
+for (let col = 1; col < WWidth - 1; col++) {
+  world[0][col] = world[WHeight - 1][col] = WH;
+}
 
-function strWorld(matrix) {
-  let s = "";
-  for (let row = 0; row < matrix.length; row++) {
-    for (let col = 0; col < matrix[row].length; col++) {
-      s += matrix[row][col];
+// Set the snake in the world
+
+/**
+ * Serializes the world matrix into an ASCII string
+ * @param {string[][]} worldMatrix
+ * @returns {string}
+ */
+function world2string(worldMatrix) {
+  let s = ""; // Accumulator|Aggregator (this value accumulates the result of the following loops.
+  for (let row = 0; row < worldMatrix.length; row++) {
+    for (let col = 0; col < worldMatrix[row].length; col++) {
+      s += worldMatrix[row][col];
     }
     s += '\n';
   }
   return s;
 }
 
-function drawWorld(matrix) {
-  console.log(strWorld(matrix));
-
-
+/**
+ * Draws the world to the screen
+ * @param {string[][]} worldMatrix
+ */
+function drawWorld(worldMatrix) {
+  console.log(WWidth, WHeight);
+  console.log(world2string(worldMatrix));
 }
 
-
-console.log(w, h);
-drawWorld(matrix);
+drawWorld(world);
 
 
-// Draw the World with a Snake in it
-console.log(w, h, SHx, SHy, Sl, Sd);
 
-
-// test shoot x___X
+// TODO: Draw the World with a Snake in it
+// console.log(WWidth, WHeight, SHx, SHy, Sl, Sd);
