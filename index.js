@@ -1,12 +1,12 @@
-use strict";
+"use strict";
 
 let w = process.argv[2] || 30;
 let h = process.argv[3] || 10;
 
 let SHx = process.argv[4] || 1; //Snake head X coordinate
 let SHy = process.argv[5] || 1; //Snake head Y coordinate
-let Sl = process.argv[6] || 3; // Snake length in segments including the head
-let Sd = process.argv[7] || 'W'; // Snake movement direction [N,S,E,W]
+let Sl  = process.argv[6] || 3; // Snake length in segments including the head
+let Sd  = process.argv[7] || 'W'; // Snake movement direction [N,S,E,W]
 
 // Q - snake head
 // o - snake body
@@ -26,37 +26,41 @@ const SF = '*'; // snake food
 
 // Draw the World
 
-var matrix = [];
-for (var row = 0; row < h; row++) {
-    matrix[row] = [];
-    for (var col = 0; col < w; col++) {
-        matrix[row][col] = WS;
-    }
+let matrix = [];
+for (let row = 0; row < h; row++) {
+  matrix[row] = [];
+  for (let col = 0; col < w; col++) {
+    matrix[row][col] = WS;
+  }
 }
-matrix[0][0] = WC;
-matrix[h - 1][0] = WC;
-matrix[0][w - 1] = WC;
+matrix[0][0]         = WC;
+matrix[h - 1][0]     = WC;
+matrix[0][w - 1]     = WC;
 matrix[h - 1][w - 1] = WC;
 
-matrix [0][1] = WH;
-matrix [0][2] = WH;
-matrix [0][3] = WH;
-matrix [0][4] = WH;
+// WTF?
+matrix [0][0] = WH;
+matrix [0][0] = WH;
+matrix [0][0] = WH;
+matrix [0][0] = WH;
 
 function strWorld(matrix) {
-    var s = "";
-    for (var row = 0; row < matrix.length; row++) {
-        for (var col = 0; col < matrix[row].length; col++) {
-            s += matrix[row][col];
-        }
-        s += '\n'
+  let s = "";
+  for (let row = 0; row < matrix.length; row++) {
+    for (let col = 0; col < matrix[row].length; col++) {
+      s += matrix[row][col];
     }
-    return s;
+    s += '\n';
+  }
+  return s;
 }
 
 function drawWorld(matrix) {
-    console.log(strWorld(matrix));
+  console.log(strWorld(matrix));
+
+
 }
+
 
 console.log(w, h);
 drawWorld(matrix);
