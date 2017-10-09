@@ -5,7 +5,7 @@ let WWidth  = process.argv[2] || 30;    // Reading the 3rd argument as the World
 let WHeight = process.argv[3] || 10;    // Reading the 3rd argument as the World height
 
 let SHx = process.argv[4] || 4;   //Snake head X coordinate
-let SHy = process.argv[5] || 4;   //Snake head Y coordinate
+let SHy = process.argv[5] || 6;   //Snake head Y coordinate
 let Sl  = process.argv[6] || 3;   // Snake length in segments including the head
 let Sd  = process.argv[7] || 'W'; // Snake movement direction [N,S,E,W]
 
@@ -42,6 +42,7 @@ for (let col = 1; col < WWidth - 1; col++) {
 }
 
 // Set the snake in the world
+world[SHx][SHy] = SH;
 
 /**
  * Serializes the world matrix into an ASCII string
@@ -69,8 +70,6 @@ function drawWorld(worldMatrix) {
 }
 
 drawWorld(world);
-
-
 
 // TODO: Draw the World with a Snake in it
 // console.log(WWidth, WHeight, SHx, SHy, Sl, Sd);
