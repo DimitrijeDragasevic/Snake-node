@@ -45,7 +45,6 @@ for (let col = 1; col < WWidth - 1; col++) {
 // TODO:Check if the SHx and SHy are within the world.
 
 let snake = [[SHx, SHy]];
-// world[SHx][SHy] = SH;
 
 let Br         = SHx;
 let Bc         = SHy;
@@ -164,7 +163,19 @@ function isPositionEmpty(r, c) {
   return world[r][c] === WS;
 }
 
-drawWorld(world, snake);
+// let xCord = Math.floor(Math.random() * (WHeight - 2) + 1);
+// let yCord = Math.floor(Math.random() * (WWidth - 2) + 1);
+
+
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+let yCord = getRandomNumber(1, WWidth - 2);
+let xCord = getRandomNumber(1, WHeight - 2);
+let food = world[xCord][yCord] = SF;
+
+drawWorld(world, snake, food);
 
 // TODO: Move the snake for 1 step
 moveSnake(snake, 'W');
