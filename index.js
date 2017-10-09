@@ -41,9 +41,6 @@ for (let col = 1; col < WWidth - 1; col++) {
   world[0][col] = world[WHeight - 1][col] = WH;
 }
 
-// Set the snake in the world
-// TODO:Check if the SHx and SHy are within the world.
-
 let snake = [[SHx, SHy]];
 
 let Br         = SHx;
@@ -125,7 +122,6 @@ function drawWorld(worldMatrix, snakeArray) {
   console.log(world2string(worldMatrix, snakeArray));
 }
 
-
 function moveSnake(snake, direction) {
   direction = direction || Sd;
   let head  = snake[0];
@@ -149,6 +145,7 @@ function moveSnake(snake, direction) {
       SHy = head[1] + 1;
       break;
   }
+  //TODO@all : make this tommorow
 // if is NOT valid (SHx, SHy) Game over
   if (!isPositionEmpty(SHx, SHy)) {
     console.log('Game Over');
@@ -163,21 +160,23 @@ function isPositionEmpty(r, c) {
   return world[r][c] === WS;
 }
 
-// let xCord = Math.floor(Math.random() * (WHeight - 2) + 1);
-// let yCord = Math.floor(Math.random() * (WWidth - 2) + 1);
-
-
+// generates a random number between min and max
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+
+// calculates the random position according to the parameters
+// considering putting the whole thing inside a function ?
 let yCord = getRandomNumber(1, WWidth - 2);
 let xCord = getRandomNumber(1, WHeight - 2);
-let food = world[xCord][yCord] = SF;
+let food  = world[xCord][yCord] = SF;
 
 drawWorld(world, snake, food);
 
-// TODO: Move the snake for 1 step
+
+//TODO@dyd : make it a library but first consult with anarchitect
+// probably make a library  :D
 moveSnake(snake, 'W');
 drawWorld(world, snake);
 moveSnake(snake, 'S');

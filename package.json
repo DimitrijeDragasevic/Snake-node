@@ -4,9 +4,9 @@
   "description": "Simple snake game",
   "main": "index.js",
   "dependencies": {
+    "readline": "^1.3.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
