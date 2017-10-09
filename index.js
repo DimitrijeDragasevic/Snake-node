@@ -6,8 +6,8 @@ let WHeight = process.argv[3] || 10;    // Reading the 3rd argument as the World
 
 let SHx = process.argv[4] || 4;   //Snake head X coordinate
 let SHy = process.argv[5] || 6;   //Snake head Y coordinate
-let Sl  = process.argv[6] || 3;   // Snake length in segments including the head
-let Sd  = process.argv[7] || 'W'; // Snake movement direction [N,S,E,W]
+let Sl  = process.argv[6] || 5;   // Snake length in segments including the head
+let Sd  = process.argv[7] || 'S'; // Snake movement direction [N,S,E,W]
 
 // Constants defined that render the world.
 const WC = '+'; // world corner
@@ -42,7 +42,37 @@ for (let col = 1; col < WWidth - 1; col++) {
 }
 
 // Set the snake in the world
+// TODO:Check if the SHx and SHy are within the world.
 world[SHx][SHy] = SH;
+
+let Br         = SHx;
+let Bc         = SHy;
+let hasExceded = false;
+for (let body = 0; body < Sl; body++) {
+  switch (Sd.toUpperCase()) {
+    // Column movement
+    case 'W':
+      Bc--;
+      break;
+    case 'E':
+      Bc++;
+      break;
+    // Row movement
+    case 'N':
+      Br++;
+      break;
+    case 'S':
+      Br--;
+      break;
+  }
+  if ((0 < Br) && (Br < WHeight - 1) && (0 < Bc) && (Bc < WWidth - 1)) {
+    world[Br][Bc] = SB;
+  } else {
+    hasExceded = true;
+    break;
+  }
+}
+
 
 /**
  * Serializes the world matrix into an ASCII string
@@ -66,10 +96,15 @@ function world2string(worldMatrix) {
  */
 function drawWorld(worldMatrix) {
   console.log(WWidth, WHeight);
+  if (hasExceded) {
+    console.warn('Snake body exceeded world');
+  }
   console.log(world2string(worldMatrix));
 }
 
 drawWorld(world);
 
-// TODO: Draw the World with a Snake in it
-// console.log(WWidth, WHeight, SHx, SHy, Sl, Sd);
+// TODO: Move the snake for 1 step
+
+drawWorld(world);
+
