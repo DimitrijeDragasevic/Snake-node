@@ -14,9 +14,10 @@ const WC = '+'; // world corner
 const WV = '|'; // world vertical wall (edge)
 const WH = '-'; // world horizontal wall (edge)
 const WS = ' '; // world space (a space character)
-const SH = 'Q'; // snake head
+const SH = 'O'; // snake head
 const SB = 'o'; // snake body
-const SF = '*'; // snake food
+const SF = '$'; // snake food
+const SC = '*'; // snake collision
 
 // Define the World
 let world = []; // A 2 dimensional matrix (Array of Arrays => Array of rows which is an array of row cells)
@@ -88,6 +89,7 @@ function _inSnake(r, c, snakeArray) {
 /**
  * Serializes the world matrix into an ASCII string
  * @param {string[][]} worldMatrix
+ * @param {string[]} snakeArray
  * @returns {string}
  */
 function world2string(worldMatrix, snakeArray) {
@@ -97,7 +99,7 @@ function world2string(worldMatrix, snakeArray) {
       // if the coordinates (row, col) are present in the snake draw the corresponding character otherwise draw what
       // ever is in the World.
       let snakeSegmentIndex = _inSnake(row, col, snakeArray);
-      if (snakeSegmentIndex < 0) {
+      if (snakeSegmentIndex < 0 || worldMatrix[row][col] === SC) {
         s += worldMatrix[row][col];
       } else {
         if (snakeSegmentIndex === 0) {
@@ -118,11 +120,13 @@ function world2string(worldMatrix, snakeArray) {
  * @param {number[]} snakeArray
  */
 function drawWorld(worldMatrix, snakeArray) {
-  console.log(WWidth, WHeight);
+  // console.log(WWidth, WHeight);
   if (hasExceded) {
     console.warn('Snake body exceeded world');
   }
-  console.log(world2string(worldMatrix, snakeArray));
+  // console.log(world2string(worldMatrix, snakeArray));
+  process.stdout.write('\x1Bc');
+  process.stdout.write(world2string(worldMatrix, snakeArray));
 }
 
 
@@ -150,12 +154,23 @@ function moveSnake(snake, direction) {
       break;
   }
 // if is NOT valid (SHx, SHy) Game over
-  if (!isPositionEmpty(SHx, SHy)) {
-    console.log('Game Over');
-    process.exit(0);
-  } else {
+  if (isPositionEmpty(SHx, SHy)) {
+    if (_inSnake(SHx, SHy, snake) < 0) {
+      snake.unshift([SHx, SHy]);
+      snake.pop();
+    } else {
+      world[SHx][SHy] = SC;
+      drawWorld(world, snake);
+      console.log('Game Over! The snake had hit itself in the body!');
+      process.exit(0);
+    }
+  } else if (isFood(SHx, SHy)) {
     snake.unshift([SHx, SHy]);
-    snake.pop();
+  } else {
+    world[SHx][SHy] = SC;
+    drawWorld(world, snake);
+    console.log('Game Over! The snake had hit a wall!');
+    process.exit(0);
   }
 }
 
@@ -163,27 +178,64 @@ function isPositionEmpty(r, c) {
   return world[r][c] === WS;
 }
 
-// let xCord = Math.floor(Math.random() * (WHeight - 2) + 1);
-// let yCord = Math.floor(Math.random() * (WWidth - 2) + 1);
-
+function isFood(r, c) {
+  return world[r][c] === SF;
+}
 
 function getRandomNumber(min, max) {
+  // Nice copy-paste, except that max is not the maximum but the supremum
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-let yCord = getRandomNumber(1, WWidth - 2);
-let xCord = getRandomNumber(1, WHeight - 2);
-let food = world[xCord][yCord] = SF;
+function spawnFood(r, c) {
+  if (!r || !c) {
+    do {
+      r = getRandomNumber(1, WHeight - 2);
+      c = getRandomNumber(1, WWidth - 2);
+    } while (isPositionEmpty(r, c) && !_inSnake(r, c, snake));
+  } // TODO: Verify that the input is sane (0<r<H-1 && 0<c<W-1)
+  world[r][c] = SF;
+}
 
-drawWorld(world, snake, food);
-
-// TODO: Move the snake for 1 step
-moveSnake(snake, 'W');
-drawWorld(world, snake);
-moveSnake(snake, 'S');
-drawWorld(world, snake);
-moveSnake(snake, 'E');
-drawWorld(world, snake);
-moveSnake(snake, 'N');
+spawnFood(4, 5);
 drawWorld(world, snake);
 
+
+// Reading CLI input
+const readline = require('readline');
+readline.emitKeypressEvents(process.stdin);
+process.stdin.setRawMode(true);
+process.stdin.on('keypress', function (s, key) {
+  switch (key.name) {
+    case "up":
+      Sd = 'N';
+      break;
+    case "down":
+      Sd = 'S';
+      break;
+    case "left":
+      Sd = 'W';
+      break;
+    case "right":
+      Sd = 'E';
+      break;
+    case "c": // CTRL+C exit the game
+      if (key.ctrl) {
+        process.exit();
+      }
+      break;
+  }
+});
+process.on('SIGINT', function () {
+  console.log('Interrupted');
+  process.exit(1);
+});
+
+setInterval(function () {
+  spawnFood();
+}, 5000);
+
+setInterval(function () {
+  moveSnake(snake);
+  drawWorld(world, snake);
+}, 800);
