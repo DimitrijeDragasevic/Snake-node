@@ -164,7 +164,9 @@ function moveSnake(snake, direction) {
       process.exit(0);
     }
   } else if (isFood(SHx, SHy)) {
+    world[SHx][SHy] = WS;
     snake.unshift([SHx, SHy]);
+    spawnFood();
   } else {
     world[SHx][SHy] = SC;
     drawWorld(world, snake);
@@ -228,10 +230,10 @@ process.stdin.on('keypress', function (s, key) {
   }
 });
 
-setInterval(function () {
-  spawnFood();
-  drawWorld(world, snake);
-}, 5000);
+// setInterval(function () {
+//   spawnFood();
+//   drawWorld(world, snake);
+// }, 5000);
 
 setInterval(function () {
   moveSnake(snake);
