@@ -125,10 +125,9 @@ function drawWorld(worldMatrix, snakeArray) {
     console.warn('Snake body exceeded world');
   }
   // console.log(world2string(worldMatrix, snakeArray));
-  process.stdout.write('\x1Bc');
+  process.stdout.write('\x1Bc'); //Reset the caret position
   process.stdout.write(world2string(worldMatrix, snakeArray));
 }
-
 
 function moveSnake(snake, direction) {
   direction = direction || Sd;
@@ -197,6 +196,8 @@ function spawnFood(r, c) {
   world[r][c] = SF;
 }
 
+
+//Start the game
 spawnFood(4, 5);
 drawWorld(world, snake);
 
@@ -226,13 +227,10 @@ process.stdin.on('keypress', function (s, key) {
       break;
   }
 });
-process.on('SIGINT', function () {
-  console.log('Interrupted');
-  process.exit(1);
-});
 
 setInterval(function () {
   spawnFood();
+  drawWorld(world, snake);
 }, 5000);
 
 setInterval(function () {
