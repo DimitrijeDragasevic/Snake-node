@@ -236,4 +236,4 @@ setInterval(function () {
 setInterval(function () {
   moveSnake(snake);
   drawWorld(world, snake);
-}, 800);
+}, 500);
