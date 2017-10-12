@@ -1,5 +1,8 @@
 "use strict";
 
+//const config = require('./config/config');
+
+
 // Reading the input from the user that initiated the process.
 let WWidth  = process.argv[2] || 30;    // Reading the 3rd argument as the World width
 let WHeight = process.argv[3] || 10;    // Reading the 3rd argument as the World height
@@ -42,8 +45,6 @@ for (let col = 1; col < WWidth - 1; col++) {
   world[0][col] = world[WHeight - 1][col] = WH;
 }
 
-// Set the snake in the world
-// TODO:Check if the SHx and SHy are within the world.
 
 let snake = [[SHx, SHy]];
 
@@ -129,7 +130,7 @@ function drawWorld(worldMatrix, snakeArray) {
   process.stdout.write(world2string(worldMatrix, snakeArray));
 }
 
-function moveSnake(snake, direction) {
+function snakeMovement(snake, direction) {
   direction = direction || Sd;
   let head  = snake[0];
   switch (direction.toUpperCase()) {
@@ -153,7 +154,7 @@ function moveSnake(snake, direction) {
       break;
   }
 // if is NOT valid (SHx, SHy) Game over
-  if (isPositionEmpty(SHx, SHy)) {
+  if (isTheFieldEmpty(SHx, SHy)) {
     if (_inSnake(SHx, SHy, snake) < 0) {
       snake.unshift([SHx, SHy]);
       snake.pop();
@@ -175,7 +176,7 @@ function moveSnake(snake, direction) {
   }
 }
 
-function isPositionEmpty(r, c) {
+function isTheFieldEmpty(r, c) {
   return world[r][c] === WS;
 }
 
@@ -193,7 +194,7 @@ function spawnFood(r, c) {
     do {
       r = getRandomNumber(1, WHeight - 2);
       c = getRandomNumber(1, WWidth - 2);
-    } while (isPositionEmpty(r, c) && !_inSnake(r, c, snake));
+    } while (isTheFieldEmpty(r, c) && !_inSnake(r, c, snake));
   } // TODO: Verify that the input is sane (0<r<H-1 && 0<c<W-1)
   world[r][c] = SF;
 }
@@ -230,12 +231,7 @@ process.stdin.on('keypress', function (s, key) {
   }
 });
 
-// setInterval(function () {
-//   spawnFood();
-//   drawWorld(world, snake);
-// }, 5000);
-
 setInterval(function () {
-  moveSnake(snake);
+  snakeMovement(snake);
   drawWorld(world, snake);
 }, 200);
