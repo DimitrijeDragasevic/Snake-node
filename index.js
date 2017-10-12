@@ -238,4 +238,4 @@ process.stdin.on('keypress', function (s, key) {
 setInterval(function () {
   moveSnake(snake);
   drawWorld(world, snake);
-}, 500);
+}, 200);
